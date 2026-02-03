@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const message = "Đá không nhắn tin nhiều với anh, nhưng chẳng hiểu sao anh lúc nào cũng muốn nhắn cho đá. Có lẽ vì đá là người khiến anh kiên nhẫn nhất từ trước tới giờ, anh chưa từng theo đuổi ai lâu như vậy.<br><br>Bây giờ mình chưa có bức ảnh chung nào để anh đăng, nhưng anh hi vọng sau này sẽ có nhiều kỷ niệm để anh thêm vào. Anh mong em cho anh một cơ hội được quan tâm, được chăm sóc em theo cách chậm rãi và chân thành nhất.<br><br>Anh nói hơi nhiều rồi, em chưa cần đồng ý ngay đâu. Chỉ mong em cho anh thấy là anh vẫn còn cơ hội, còn được ở lại để cố gắng. Em cứ là chính em như bây giờ nhé, nếu em thay đổi quá anh sợ mình chưa quen được.s";
+const message = "Hôm nay, anh muốn gửi đến em vài dòng tâm sự. Dù anh và em chưa nói chuyện với nhau nhiều, nhưng không hiểu sao anh luôn muốn được trò chuyện cùng em. Có lúc anh ngại, có lúc lại không biết nên bắt đầu thế nào cho tự nhiên.<br><br>Anh không phải người nói chuyện khéo léo, đôi khi còn vụng về trong cách bày tỏ, nhưng tình cảm anh dành cho em là chân thành. Anh mong rằng chúng ta sẽ có thêm nhiều cơ hội để nói chuyện, để anh hiểu em nhiều hơn, và cũng để anh có thể quan tâm em theo cách chậm rãi và thật lòng nhất.<br><br>Em là người con gái khiến anh kiên nhẫn nhất từ trước đến giờ, anh chưa từng theo đuổi ai lâu như vậy. Em không cần phải trả lời anh ngay đâu, chỉ mong em cho anh thêm cơ hội để cố gắng. Anh hứa sẽ trân trọng điều đó.";
 
 const loaderContainer = document.getElementById("loader-container");
 const progressBar = document.getElementById("progress-bar");
@@ -275,14 +275,14 @@ function init3D() {
                 textContent.scrollTop = textContent.scrollHeight;
             }
 
-            timer = setTimeout(typeWriter, 30);
+            timer = setTimeout(typeWriter, 60);
         } else {
             document.querySelector(".signature").style.opacity = "1";
             isTypingCompleted = true;
         }
     }
 
-    const imagePaths = Array.from({ length: 5 }, (_, i) => `style/img/Anh (${i + 1}).jpg`);
+    const imagePaths = Array.from({ length: 8 }, (_, i) => `style/img/Anh (${i + 1}).jpg`);
     const imageStack = document.getElementById("imageStack");
 
     let cards = [];
@@ -291,6 +291,7 @@ function init3D() {
     let currentDeltaX = 0;
     let preventClick = false;
     let topCard = null;
+    let autoSwipeInterval = null;
 
     function createCard(path, index) {
         const card = document.createElement("div");
@@ -418,6 +419,7 @@ function init3D() {
     }
 
     function swipeCard(direction) {
+        
         const flyX = direction * (window.innerWidth + 500);
         const flyRot = direction * 45;
 
@@ -429,29 +431,50 @@ function init3D() {
             updateTopCard();
         }, 500);
     }
+    function startAutoSwipe() {
+    stopAutoSwipe();
+    autoSwipeInterval = setInterval(() => {
+        if (!modalContainer.classList.contains("active")) return;
+        if (!topCard || isDragging) return;
+
+        swipeCard(1); // tự động đổi ảnh (bay sang trái)
+    }, 3000); // ⏱️ 3 giây / ảnh
+}
+
+function stopAutoSwipe() {
+    if (autoSwipeInterval) {
+        clearInterval(autoSwipeInterval);
+        autoSwipeInterval = null;
+    }
+}
 
     function openModal() {
-        if (!modalContainer.classList.contains("active")) {
-            modalContainer.classList.add("active");
-            if (renderer) renderer.setPixelRatio(window.devicePixelRatio * 0.5);
-            initStack();
-            if (isTypingCompleted) {
-                document.getElementById("typingText").innerHTML = message;
-                document.querySelector(".signature").style.opacity = "1";
-                return;
-            }
+    if (!modalContainer.classList.contains("active")) {
+        modalContainer.classList.add("active");
+        if (renderer) renderer.setPixelRatio(window.devicePixelRatio * 0.5);
 
-            i = 0;
-            document.getElementById("typingText").innerHTML = "";
-            document.querySelector(".signature").style.opacity = "0";
-            clearTimeout(timer);
-            typeWriter();
+        initStack();
+        startAutoSwipe(); // ✅ BẮT ĐẦU TỰ ĐỘNG ĐỔI ẢNH
+
+        if (isTypingCompleted) {
+            document.getElementById("typingText").innerHTML = message;
+            document.querySelector(".signature").style.opacity = "1";
+            return;
         }
-    }
-    function closeModal() {
-        modalContainer.classList.remove("active");
-        if (renderer) renderer.setPixelRatio(window.devicePixelRatio);
+
+        i = 0;
+        document.getElementById("typingText").innerHTML = "";
+        document.querySelector(".signature").style.opacity = "0";
         clearTimeout(timer);
+        typeWriter();
+    }
+}
+    function closeModal() {
+    modalContainer.classList.remove("active");
+    if (renderer) renderer.setPixelRatio(window.devicePixelRatio);
+
+    stopAutoSwipe(); // ✅ DỪNG AUTO KHI ĐÓNG MODAL
+    clearTimeout(timer);
     }
     clickMeText.addEventListener("click", openModal);
     closeButton.addEventListener("click", closeModal);
