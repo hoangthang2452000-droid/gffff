@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gui em ❤️</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pacifico&display=swap" rel="stylesheet">
@@ -12,6 +13,23 @@
 </head>
 
 <body>
+
+  <!-- 🟢 MÀN HÌNH CLICK ĐẦU -->
+  <div id="startScreen" style="
+    position: fixed;
+    inset: 0;
+    background: black;
+    color: white;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;">
+    💖 Chạm để bắt đầu 💖
+  </div>
+
+  <!-- LOADER -->
   <div id="loader-container">
     <div class="loader-content">
       <div class="loader-heart"></div>
@@ -26,7 +44,8 @@
 
   <canvas id="bg"></canvas>
 
-  <audio id="backgroundMusic" loop>
+  <!-- 🎵 AUDIO (KHÔNG AUTOPLAY) -->
+  <audio id="backgroundMusic" preload="none">
     <source src="./style/Ngàn Năm Ánh Sáng.mp3" type="audio/mpeg" />
   </audio>
 
@@ -41,10 +60,11 @@
       <div class="modal-body">
         <div class="text-content">
           <p id="typingText"></p>
-          <p class="signature" style="opacity: 0; transition: opacity 1s;">Người thương em❤️</p>
+          <p class="signature" style="opacity: 0; transition: opacity 1s;">
+            Người thương em❤️
+          </p>
         </div>
-        <div class="image-content" id="imageStack">
-        </div>
+        <div class="image-content" id="imageStack"></div>
       </div>
     </div>
   </div>
@@ -56,45 +76,25 @@
     </div>
   </div>
 
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.166.0/build/three.module.js"
-      }
-    }
-  </script>
+  <!-- 🔴 KHÔNG LOAD THREE / SCRIPT TRƯỚC CLICK -->
 
-  <script type="module" src="./style/script.js"></script>
+  <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="./style/script.js"></script>
+
 <script>
-const startScreen = document.getElementById("startScreen");
-const audio = document.getElementById("bgm");
+  const startScreen = document.getElementById("startScreen");
+  const audio = document.getElementById("backgroundMusic");
 
-startScreen.addEventListener("click", () => {
-  // 🎵 nhạc
-  audio.play().catch(()=>{});
+  startScreen.addEventListener("click", () => {
+    startScreen.style.display = "none";
 
-  // ẩn màn hình click
-  startScreen.style.display = "none";
+    audio.loop = true;
+    audio.play().catch(() => {});
 
-  // 🚀 khởi động app
-  startApp();
-});
-
-// ❌ KHÔNG cho chạy tự động
-// window.onload = startApp;
-
-function startApp() {
-  // ✅ CHỈ để logic ở đây
-  // loading
-  // animation
-  // canvas
-  // setInterval / requestAnimationFrame
-}
+    // 🚀 gọi app
+    startApp();
+  });
 </script>
+
 </body>
-<div id="startScreen">
-  💖 Chạm để bắt đầu 💖
-</div>
-
-
-</html>
+</html>x`x`

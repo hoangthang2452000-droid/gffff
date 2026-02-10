@@ -1,4 +1,4 @@
-import * as THREE from "three";
+
 
 const message = "Hôm nay, anh muốn gửi đến em vài dòng tâm sự. Dù anh và em chưa nói chuyện với nhau nhiều, nhưng không hiểu sao anh luôn muốn được trò chuyện cùng em. Có lúc anh ngại, có lúc lại không biết nên bắt đầu thế nào cho tự nhiên.<br><br>Anh không phải người nói chuyện khéo léo, đôi khi còn vụng về trong cách bày tỏ, nhưng tình cảm anh dành cho em là chân thành. Anh mong rằng chúng ta sẽ có thêm nhiều cơ hội để nói chuyện, để anh hiểu em nhiều hơn, và cũng để anh có thể quan tâm em theo cách chậm rãi và thật lòng nhất.<br><br>Em là người con gái khiến anh kiên nhẫn nhất từ trước đến giờ, anh chưa từng theo đuổi ai lâu như vậy. Em không cần phải trả lời anh ngay đâu, chỉ mong em cho anh thêm cơ hội để cố gắng. Anh hứa sẽ trân trọng điều đó.";
 
