@@ -77,13 +77,13 @@
     </div>
   </div>
 
-  <!-- ✅ THREE.JS CHO iOS 14–15 -->
+  <!-- ✅ THREE.JS -->
   <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
 
-  <!-- ✅ SCRIPT CHÍNH -->
-  <script src="./style/script.js"></script>
+  <!-- ❌ KHÔNG LOAD SCRIPT NGAY -->
+  <!-- <script src="./style/script.js"></script> -->
 
-  <!-- ✅ KHỞI ĐỘNG AN TOÀN -->
+  <!-- ✅ KHỞI ĐỘNG AN TOÀN CHO iOS 14–18 -->
   <script>
     const startScreen = document.getElementById("startScreen");
     const audio = document.getElementById("backgroundMusic");
@@ -96,18 +96,27 @@
 
       startScreen.style.display = "none";
 
-      // iOS yêu cầu audio phải play sau click
+      // iOS cần click để play audio
       audio.loop = true;
       audio.play().catch(() => {});
 
-      // 🚀 ĐỢI LOAD XONG MỌI THỨ
-      window.addEventListener("load", () => {
+      // ✅ LOAD script.js SAU CLICK
+      const script = document.createElement("script");
+      script.src = "./style/script.js";
+      script.onload = () => {
+        // ✅ CHẶN LỖI ZALO iOS 14–15
+        if (typeof window.zaloJSV2 === "undefined") {
+          console.log("⚠️ Không có zaloJSV2 – iOS cũ, bỏ qua");
+        }
+
         if (typeof startApp === "function") {
           startApp();
         } else {
           console.error("❌ startApp chưa tồn tại");
         }
-      });
+      };
+
+      document.body.appendChild(script);
     });
   </script>
 
