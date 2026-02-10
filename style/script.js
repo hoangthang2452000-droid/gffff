@@ -54,19 +54,20 @@ function createHighlightTexture() {
 
 function init3D() {
     const audio = document.getElementById("backgroundMusic");
+    let audioUnlocked = false;
+
+function unlockAudio() {
+    if (!audio || audioUnlocked) return;
+
     audio.currentTime = 25;
-    document.body.addEventListener(
-        "click",
-        () => {
-            if (audio.paused)
-                audio
-                    .play()
-                    .catch((e) =>
-                        console.log("Reproducción automática bloqueada."),
-                    );
-        },
-        { once: true },
-    );
+    audio.play().then(() => {
+        audioUnlocked = true;
+    }).catch(() => {});
+}
+
+["click", "touchstart"].forEach(evt => {
+    document.body.addEventListener(evt, unlockAudio, { once: true });
+});
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -275,7 +276,7 @@ function init3D() {
                 textContent.scrollTop = textContent.scrollHeight;
             }
 
-            timer = setTimeout(typeWriter, 60);
+            timer = setTimeout(typeWriter, 80);
         } else {
             document.querySelector(".signature").style.opacity = "1";
             isTypingCompleted = true;
@@ -291,7 +292,8 @@ function init3D() {
     let currentDeltaX = 0;
     let preventClick = false;
     let topCard = null;
-    let autoSwipeInterval = null;
+    let autoSwipeTimer = null;
+    const AUTO_SWIPE_DELAY = 3500;
 
     function createCard(path, index) {
         const card = document.createElement("div");
@@ -419,7 +421,6 @@ function init3D() {
     }
 
     function swipeCard(direction) {
-        
         const flyX = direction * (window.innerWidth + 500);
         const flyRot = direction * 45;
 
@@ -433,48 +434,43 @@ function init3D() {
     }
     function startAutoSwipe() {
     stopAutoSwipe();
-    autoSwipeInterval = setInterval(() => {
-        if (!modalContainer.classList.contains("active")) return;
-        if (!topCard || isDragging) return;
-
-        swipeCard(1); // tự động đổi ảnh (bay sang trái)
-    }, 3000); // ⏱️ 3 giây / ảnh
-}
-
-function stopAutoSwipe() {
-    if (autoSwipeInterval) {
-        clearInterval(autoSwipeInterval);
-        autoSwipeInterval = null;
+    autoSwipeTimer = setInterval(() => {
+        if (!topCard) return;
+        if (isDragging) return;
+        swipeCard(1);
+    }, AUTO_SWIPE_DELAY);
     }
-}
+
+    function stopAutoSwipe() {
+    if (autoSwipeTimer) {
+        clearInterval(autoSwipeTimer);
+        autoSwipeTimer = null;
+    }
+    }
 
     function openModal() {
-    if (!modalContainer.classList.contains("active")) {
-        modalContainer.classList.add("active");
-        if (renderer) renderer.setPixelRatio(window.devicePixelRatio * 0.5);
+        if (!modalContainer.classList.contains("active")) {
+            modalContainer.classList.add("active");
+            if (renderer) renderer.setPixelRatio(window.devicePixelRatio * 0.5);
+            initStack();
+            if (isTypingCompleted) {
+                document.getElementById("typingText").innerHTML = message;
+                document.querySelector(".signature").style.opacity = "1";
+                return;
+            }
 
-        initStack();
-        startAutoSwipe(); // ✅ BẮT ĐẦU TỰ ĐỘNG ĐỔI ẢNH
-
-        if (isTypingCompleted) {
-            document.getElementById("typingText").innerHTML = message;
-            document.querySelector(".signature").style.opacity = "1";
-            return;
+            i = 0;
+            document.getElementById("typingText").innerHTML = "";
+            document.querySelector(".signature").style.opacity = "0";
+            clearTimeout(timer);
+            typeWriter();
+            startAutoSwipe();
         }
-
-        i = 0;
-        document.getElementById("typingText").innerHTML = "";
-        document.querySelector(".signature").style.opacity = "0";
-        clearTimeout(timer);
-        typeWriter();
     }
-}
     function closeModal() {
-    modalContainer.classList.remove("active");
-    if (renderer) renderer.setPixelRatio(window.devicePixelRatio);
-
-    stopAutoSwipe(); // ✅ DỪNG AUTO KHI ĐÓNG MODAL
-    clearTimeout(timer);
+        modalContainer.classList.remove("active");
+        if (renderer) renderer.setPixelRatio(window.devicePixelRatio);
+        clearTimeout(timer);
     }
     clickMeText.addEventListener("click", openModal);
     closeButton.addEventListener("click", closeModal);

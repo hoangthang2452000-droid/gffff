@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gửi em ❤️</title>
+  <title>Gui em ❤️</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Pacifico&display=swap" rel="stylesheet">
@@ -37,11 +37,11 @@
   <div id="modalContainer" class="modal-container">
     <div class="modal-content">
       <span class="close-button">×</span>
-      <h1>Chào em, ….cô gái đặc biệt!</h1>
+      <h1>Gửi đá.. người đặc biệt với anh</h1>
       <div class="modal-body">
         <div class="text-content">
           <p id="typingText"></p>
-          <p class="signature" style="opacity: 0; transition: opacity 1s;">Người yêu em ❤️</p>
+          <p class="signature" style="opacity: 0; transition: opacity 1s;">Người thương em❤️</p>
         </div>
         <div class="image-content" id="imageStack">
         </div>
@@ -65,7 +65,36 @@
   </script>
 
   <script type="module" src="./style/script.js"></script>
+<script>
+const startScreen = document.getElementById("startScreen");
+const audio = document.getElementById("bgm");
+
+startScreen.addEventListener("click", () => {
+  // 🎵 nhạc
+  audio.play().catch(()=>{});
+
+  // ẩn màn hình click
+  startScreen.style.display = "none";
+
+  // 🚀 khởi động app
+  startApp();
+});
+
+// ❌ KHÔNG cho chạy tự động
+// window.onload = startApp;
+
+function startApp() {
+  // ✅ CHỈ để logic ở đây
+  // loading
+  // animation
+  // canvas
+  // setInterval / requestAnimationFrame
+}
+</script>
 </body>
+<div id="startScreen">
+  💖 Chạm để bắt đầu 💖
+</div>
 
 
 </html>
