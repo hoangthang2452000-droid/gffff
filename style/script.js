@@ -22,16 +22,17 @@ const interval = setInterval(() => {
     progressPercent.textContent = Math.floor(progress) + "%";
 }, 300);
 
-window.onload = () => {
+function startApp() {
     clearInterval(interval);
     progressBar.style.width = "100%";
     progressPercent.textContent = "100%";
+
     setTimeout(() => {
         loaderContainer.classList.add("hidden");
         clickMeContainer.style.opacity = "1";
+        init3D(); // chỉ chạy sau click
     }, 500);
-    init3D();
-};
+}
 
 let renderer;
 
@@ -150,17 +151,28 @@ function unlockAudio() {
         bevelSegments: 32,
     };
     const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
-    const material = new THREE.MeshPhysicalMaterial({
-        color: 0xef2b4c,
-        metalness: 0.05,
-        roughness: 0.15,
-        clearcoat: 1,
-        clearcoatRoughness: 0.5,
-        transmission: 0.05,
-        thickness: 0.8,
-        emissive: 0x661122,
-        emissiveIntensity: 0.6,
-        reflectivity: 0.9,
+    const isOldIOS = /iP(hone|ad|od)/.test(navigator.userAgent) &&
+                !window.WebGL2RenderingContext;
+
+    const material = isOldIOS
+    ? new THREE.MeshStandardMaterial({
+      color: 0xef2b4c,
+      metalness: 0.2,
+      roughness: 0.35,
+      emissive: 0x661122,
+      emissiveIntensity: 0.5,
+    })
+    : new THREE.MeshPhysicalMaterial({
+      color: 0xef2b4c,
+      metalness: 0.05,
+      roughness: 0.15,
+      clearcoat: 1,
+      clearcoatRoughness: 0.5,
+      transmission: 0.05,
+      thickness: 0.8,
+      emissive: 0x661122,
+      emissiveIntensity: 0.6,
+      reflectivity: 0.9,
     });
     const heart = new THREE.Mesh(geometry, material);
     heart.scale.set(0.2, 0.2, 0.2);
